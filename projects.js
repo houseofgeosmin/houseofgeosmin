@@ -16,14 +16,14 @@
 window.PROJECTS = [
 
   {
-    name: "Project Name 1",
+    name: "House in HSR",
     location: "HSR Layout, Bengaluru",
-    type: "Residential · Villa",
-    area: "3,200 sq ft",
-    year: "2025",
-    duration: "10 months",
+    type: "Residential · House Terrace",
+    area: "1,200 sq ft",
+    year: "2026",
+    duration: "2 months",
     scope: "Architecture, Construction, Interiors",
-    about: "Write 2 to 4 lines about this home here. What did the family want? What made it special? What did you build?\n\nPress Enter twice (type \\n\\n) for a new paragraph.",
+    about: "Remodeled a terrace.",
     cover: "images/project-1/cover.jpg",
     photos: [
       "images/project-1/1.jpg",
