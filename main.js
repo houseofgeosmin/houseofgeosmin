@@ -194,14 +194,15 @@
     photos = photosOf(curProject);
     lastFocus = trigger || document.activeElement;
 
-    $("#mLoc").textContent = curProject.location || "";
     $("#mTitle").textContent = curProject.name;
     $("#mAbout").textContent = curProject.about || "";
 
     var facts = $("#mFacts");
     facts.innerHTML = "";
-    [["Type", curProject.type, true], ["Area", curProject.area], ["Year", curProject.year],
-     ["Duration", curProject.duration], ["Scope", curProject.scope, true]].forEach(function (f) {
+    // Same order for every project: Type, Area, Location, Year, Duration, Scope
+    // (third item = true means the box spans the full width)
+    [["Type", curProject.type], ["Area", curProject.area], ["Location", curProject.location, true],
+     ["Year", curProject.year], ["Duration", curProject.duration], ["Scope", curProject.scope, true]].forEach(function (f) {
       if (!f[1]) return;
       var d = document.createElement("div");
       if (f[2]) d.className = "wide";

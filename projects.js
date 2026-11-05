@@ -18,7 +18,7 @@ window.PROJECTS = [
 
   {
     name: "Anjan Home",
-    location: "",
+    location: "Uttrahalli, Bangalore",
     type: "Mixed Use",
     area: "1,200 sq ft",
     year: "2026",
@@ -37,7 +37,7 @@ window.PROJECTS = [
 
   {
     name: "Rampura Home",
-    location: "",
+    location: "Rampura, Malur",
     type: "Residential",
     area: "1,500 sq ft",
     year: "2025",
@@ -57,13 +57,13 @@ window.PROJECTS = [
 
   {
     name: "Nisarga",
-    location: "Jigini",
-    type: "",
+    location: "Jigani, Karnataka",
+    type: "Residential",
     area: "2,400 sq ft",
     year: "2024",
     duration: "18 months",
     scope: "Design and Consultation",
-    about: "The Inception.",
+    about: "The Inception of Geosmin.",
     cover: "images/project-3/cover.jpg",
     photos: [
       "images/project-3/1.jpg",
@@ -75,7 +75,7 @@ window.PROJECTS = [
 
   {
     name: "Koppa Home",
-    location: "",
+    location: "Jigani, Karnataka",
     type: "Residential",
     area: "10,000 sq ft",
     year: "2026",
