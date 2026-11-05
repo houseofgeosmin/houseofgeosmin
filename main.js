@@ -269,11 +269,11 @@
     sx = null;
   }, { passive: true });
 
-  /* ---------- 3D logo: tilt + stars orbiting in and out of it ----------
-     Each star follows its own 3D path (circle, flower, figure-eight...). When a star is
-     "in front" (z > 0) it is drawn on the front canvas, otherwise on the back canvas
-     (behind the logo), so it really seems to pass through the logo.
-     Tweak the ORBITS list below to change how many stars there are and how they move. */
+  /* ---------- 3D logo: tilt + planets revolving around it ----------
+     Two calm, tilted orbits with one planet each. When a planet is "in front" (z > 0)
+     it is drawn on the front canvas, otherwise on the back canvas (behind the logo), so
+     it really seems to pass behind and in front of the logo.
+     Tweak the ORBITS list below to change the speed, size or number of planets. */
   (function () {
     var stage = $("#logoStage"), cb = $("#orbitBack"), cf = $("#orbitFront"), logo = $("#logo3d");
     if (!stage || !cb || !cf || !logo) return;
@@ -289,19 +289,15 @@
     size();
     window.addEventListener("resize", function () { size(); if (reduce) draw(0, 0, 0); });
 
-    var circle = function (t, a) { return [a * Math.cos(t), a * Math.sin(t), 0]; };
-    // a = size of the orbit, rx/ry/rz = how it is tilted, w = speed (negative = other way)
+    // a = orbit size, rx/ry/rz = how it is tilted, w = speed (negative = other way),
+    // size = planet size, step = ring dash length (2 = longer dashes, 3 = dotted look)
     var ORBITS = [
-      { a: .60, rx: 1.25, ry: .30,  rz: -.40, w: 1.00, size: 10, col: 0, shape: circle },
-      { a: .54, rx: .95,  ry: -.50, rz: .75,  w: -.72, size: 8.5, col: 1,
-        shape: function (t, a) { var r = a * (1 + .2 * Math.sin(3 * t)); return [r * Math.cos(t), r * Math.sin(t), 0]; } },   // flower-shaped
-      { a: .58, rx: 0,    ry: 0,    rz: .50,  w: 1.25, size: 8.5, col: 2,
-        shape: function (t, a) { return [a * Math.sin(t), .5 * a * Math.sin(2 * t), .9 * a * Math.cos(t)]; } },                // figure-eight through the logo
-      { a: .44, rx: 1.45, ry: -.80, rz: -.90, w: 1.70, size: 7, col: 0, shape: circle }
+      { a: .60, rx: 1.20, ry: .28,  rz: -.35, w: .55,  size: 7,   step: 2 },
+      { a: .46, rx: 1.35, ry: -.70, rz: .85,  w: -.85, size: 4.5, step: 3 }
     ];
     var COLORS = {
-      light: ["#e0401a", "#a81d0b", "#e8892f"],
-      dark:  ["#ff8a5c", "#ffd08a", "#ff5a3a"]
+      light: { ring: "#a81d0b", planet: ["#ffa57a", "#e0401a", "#7d1206"] },
+      dark:  { ring: "#ff8a5c", planet: ["#ffd9c0", "#ff6a3a", "#8f1808"] }
     };
 
     function rot(p, rx, ry, rz) {
@@ -312,25 +308,19 @@
       return [x, y, z];
     }
     function place(o, t, time, lean) {
-      var p = rot(o.shape(t, o.a), o.rx + Math.sin(time * .2 + o.a * 9) * .06,
-                  o.ry + lean + Math.sin(time * .3) * .12, o.rz + time * .07 * (o.w > 0 ? 1 : -1));
-      var k = 1 + .35 * p[2];                       // closer = bigger
+      var p = rot([o.a * Math.cos(t), o.a * Math.sin(t), 0], o.rx + Math.sin(time * .2 + o.a * 9) * .05,
+                  o.ry + lean + Math.sin(time * .3) * .1, o.rz + time * .05 * (o.w > 0 ? 1 : -1));
+      var k = 1 + .3 * p[2];                        // closer = a little bigger
       return { x: S / 2 + p[0] * (S / 2) * k, y: S / 2 + p[1] * (S / 2) * k, z: p[2], k: k };
     }
-    function star(ctx, x, y, R, spin, color, alpha, glow) {
+    function planet(ctx, x, y, R, pal, alpha, glow) {
       ctx.save();
-      ctx.translate(x, y); ctx.rotate(spin);
-      ctx.globalAlpha = alpha;
-      ctx.shadowColor = color; ctx.shadowBlur = glow ? R * 3.2 : R;
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      for (var i = 0; i < 8; i++) {
-        var rad = (i % 2 ? R * .3 : R), ang = i * Math.PI / 4;
-        ctx.lineTo(Math.cos(ang) * rad, Math.sin(ang) * rad);
-      }
-      ctx.closePath(); ctx.fill();
-      ctx.shadowBlur = 0; ctx.fillStyle = "#fff";
-      ctx.beginPath(); ctx.arc(0, 0, R * .26, 0, 6.2832); ctx.fill();
+      ctx.translate(x, y); ctx.globalAlpha = alpha;
+      var g = ctx.createRadialGradient(-R * .35, -R * .35, R * .1, 0, 0, R);
+      g.addColorStop(0, pal[0]); g.addColorStop(.55, pal[1]); g.addColorStop(1, pal[2]);
+      if (glow) { ctx.shadowColor = pal[1]; ctx.shadowBlur = R * 2.2; }
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(0, 0, R, 0, 6.2832); ctx.fill();
       ctx.restore();
     }
 
@@ -339,20 +329,22 @@
       var pal = dark ? COLORS.dark : COLORS.light;
       [bx, fx].forEach(function (c) { c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, S, S); c.lineCap = "round"; });
       ORBITS.forEach(function (o, n) {
-        var col = pal[o.col], dir = o.w > 0 ? 1 : -1;
-        var t0 = time * Math.abs(o.w) * dir + n * 1.7, N = 34, dt = .05 * dir, prev = place(o, t0, time, lean);
-        // glowing trail, drawn on whichever canvas the segment is currently on
+        // faint dashed ring: the part behind the logo is dimmer than the part in front
+        var N = 120, prev = place(o, 0, time, lean);
         for (var i = 1; i <= N; i++) {
-          var cur = place(o, t0 - i * dt, time, lean), f = 1 - i / N;
-          var ctx = (cur.z + prev.z) / 2 > 0 ? fx : bx;
-          ctx.globalAlpha = f * .75 * (cur.z > 0 ? 1 : .6);
-          ctx.strokeStyle = col; ctx.lineWidth = Math.max(.8, o.size * .5 * f * cur.k);
-          ctx.beginPath(); ctx.moveTo(prev.x, prev.y); ctx.lineTo(cur.x, cur.y); ctx.stroke();
+          var cur = place(o, i / N * 6.2832, time, lean);
+          if (i % o.step === 0) {
+            var front = (cur.z + prev.z) / 2 > 0, ctx = front ? fx : bx;
+            ctx.globalAlpha = front ? .5 : .22;
+            ctx.strokeStyle = pal.ring; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(prev.x, prev.y); ctx.lineTo(cur.x, cur.y); ctx.stroke();
+          }
           prev = cur;
         }
-        var h = place(o, t0, time, lean), front = h.z > 0;
-        var depthAlpha = .5 + .5 * Math.max(0, Math.min(1, (h.z + .6) / 1.2));
-        star(front ? fx : bx, h.x, h.y, o.size * h.k, time * 1.5 + n, col, front ? 1 : depthAlpha, dark);
+        // the planet itself
+        var h = place(o, time * o.w + n * 2.1, time, lean), isFront = h.z > 0;
+        var depthAlpha = .55 + .45 * Math.max(0, Math.min(1, (h.z + .6) / 1.2));
+        planet(isFront ? fx : bx, h.x, h.y, o.size * h.k, pal.planet, isFront ? 1 : depthAlpha, dark);
       });
     }
 

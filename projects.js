@@ -11,52 +11,59 @@
    - Missing photos? No problem, a neat "photo coming soon"
      placeholder shows instead, so the site never looks broken.
    - Projects appear on the site in the same order as here.
+   - Leave a detail as "" and that row simply won't show.
    ========================================================== */
 
 window.PROJECTS = [
 
   {
-    name: "House in HSR",
-    location: "HSR Layout, Bengaluru",
-    type: "Residential · House Terrace",
+    name: "Anjan Home",
+    location: "",
+    type: "Mixed Use",
     area: "1,200 sq ft",
     year: "2026",
-    duration: "2 months",
-    scope: "Architecture, Construction, Interiors",
-    about: "Remodeled a terrace.",
+    duration: "12 months",
+    scope: "Design and Consultation",
+    about: "Calm in the Chaos.",
     cover: "images/project-1/cover.jpg",
     photos: [
       "images/project-1/1.jpg",
       "images/project-1/2.jpg",
-      "images/project-1/3.jpg"
+      "images/project-1/3.jpg",
+      "images/project-1/4.jpg",
+      "images/project-1/5.jpg"
     ]
   },
 
   {
-    name: "Project Name 2",
-    location: "Area, Bengaluru",
-    type: "Residential · Apartment Interiors",
-    area: "1,650 sq ft",
+    name: "Rampura Home",
+    location: "",
+    type: "Residential",
+    area: "1,500 sq ft",
     year: "2025",
-    duration: "4 months",
-    scope: "Interior Design",
-    about: "Short story about this project goes here.",
+    duration: "18 months",
+    scope: "Design and Consultation",
+    about: "Looking forward in a place living in the past.",
     cover: "images/project-2/cover.jpg",
     photos: [
       "images/project-2/1.jpg",
-      "images/project-2/2.jpg"
+      "images/project-2/2.jpg",
+      "images/project-2/3.jpg",
+      "images/project-2/4.jpg",
+      "images/project-2/5.jpg",
+      "images/project-2/6.jpg"
     ]
   },
 
   {
-    name: "Project Name 3",
-    location: "City, Karnataka",
-    type: "Residential · Independent House",
+    name: "Nisarga",
+    location: "Jigini",
+    type: "",
     area: "2,400 sq ft",
     year: "2024",
-    duration: "12 months",
-    scope: "Architecture, Construction",
-    about: "Short story about this project goes here.",
+    duration: "18 months",
+    scope: "Design and Consultation",
+    about: "The Inception.",
     cover: "images/project-3/cover.jpg",
     photos: [
       "images/project-3/1.jpg",
@@ -67,18 +74,21 @@ window.PROJECTS = [
   },
 
   {
-    name: "Project Name 4",
-    location: "City, South India",
-    type: "Commercial",
-    area: "1,800 sq ft",
-    year: "2024",
-    duration: "6 months",
-    scope: "Construction, Interiors",
-    about: "Short story about this project goes here.",
+    name: "Koppa Home",
+    location: "",
+    type: "Residential",
+    area: "10,000 sq ft",
+    year: "2026",
+    duration: "24 months",
+    scope: "Design and Consultation",
+    about: "Biggest project till date.",
     cover: "images/project-4/cover.jpg",
     photos: [
       "images/project-4/1.jpg",
-      "images/project-4/2.jpg"
+      "images/project-4/2.jpg",
+      "images/project-4/3.jpg",
+      "images/project-4/4.jpg",
+      "images/project-4/5.jpg"
     ]
   }
 

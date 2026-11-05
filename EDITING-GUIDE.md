@@ -115,6 +115,9 @@ Open **index.html** and press **Ctrl + F**. Every place you may want to edit has
 | How-we-work steps | `Talk &amp; Plan` |
 | Footer quote | `Leave People and Place` |
 | Rotating messages under the title | open **main.js**, search `LINES` |
+| "Work with us" (internship) text | `Students wanted` |
+| The WhatsApp message people send when applying for an internship | `Apply on WhatsApp`, the message is the text after `text=` in the line just above (`%20` = space, `%0A` = new line) |
+| Speed or size of the planets going around the logo | open **main.js**, search `ORBITS` |
 
 **Careful:** only change the plain words. Don't delete anything inside `< >` brackets (like `<p>` or `</p>`).
 
