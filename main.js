@@ -269,6 +269,131 @@
     sx = null;
   }, { passive: true });
 
+  /* ---------- 3D logo: tilt + stars orbiting in and out of it ----------
+     Each star follows its own 3D path (circle, flower, figure-eight...). When a star is
+     "in front" (z > 0) it is drawn on the front canvas, otherwise on the back canvas
+     (behind the logo), so it really seems to pass through the logo.
+     Tweak the ORBITS list below to change how many stars there are and how they move. */
+  (function () {
+    var stage = $("#logoStage"), cb = $("#orbitBack"), cf = $("#orbitFront"), logo = $("#logo3d");
+    if (!stage || !cb || !cf || !logo) return;
+    var bx = cb.getContext("2d"), fx = cf.getContext("2d");
+    var S = 0, dpr = 1;
+
+    function size() {
+      var r = cb.getBoundingClientRect();
+      S = r.width || 460;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cb.width = cb.height = cf.width = cf.height = Math.round(S * dpr);
+    }
+    size();
+    window.addEventListener("resize", function () { size(); if (reduce) draw(0, 0, 0); });
+
+    var circle = function (t, a) { return [a * Math.cos(t), a * Math.sin(t), 0]; };
+    // a = size of the orbit, rx/ry/rz = how it is tilted, w = speed (negative = other way)
+    var ORBITS = [
+      { a: .60, rx: 1.25, ry: .30,  rz: -.40, w: 1.00, size: 10, col: 0, shape: circle },
+      { a: .54, rx: .95,  ry: -.50, rz: .75,  w: -.72, size: 8.5, col: 1,
+        shape: function (t, a) { var r = a * (1 + .2 * Math.sin(3 * t)); return [r * Math.cos(t), r * Math.sin(t), 0]; } },   // flower-shaped
+      { a: .58, rx: 0,    ry: 0,    rz: .50,  w: 1.25, size: 8.5, col: 2,
+        shape: function (t, a) { return [a * Math.sin(t), .5 * a * Math.sin(2 * t), .9 * a * Math.cos(t)]; } },                // figure-eight through the logo
+      { a: .44, rx: 1.45, ry: -.80, rz: -.90, w: 1.70, size: 7, col: 0, shape: circle }
+    ];
+    var COLORS = {
+      light: ["#e0401a", "#a81d0b", "#e8892f"],
+      dark:  ["#ff8a5c", "#ffd08a", "#ff5a3a"]
+    };
+
+    function rot(p, rx, ry, rz) {
+      var x = p[0], y = p[1], z = p[2], c, s, t;
+      c = Math.cos(rz); s = Math.sin(rz); t = x * c - y * s; y = x * s + y * c; x = t;
+      c = Math.cos(rx); s = Math.sin(rx); t = y * c - z * s; z = y * s + z * c; y = t;
+      c = Math.cos(ry); s = Math.sin(ry); t = x * c + z * s; z = -x * s + z * c; x = t;
+      return [x, y, z];
+    }
+    function place(o, t, time, lean) {
+      var p = rot(o.shape(t, o.a), o.rx + Math.sin(time * .2 + o.a * 9) * .06,
+                  o.ry + lean + Math.sin(time * .3) * .12, o.rz + time * .07 * (o.w > 0 ? 1 : -1));
+      var k = 1 + .35 * p[2];                       // closer = bigger
+      return { x: S / 2 + p[0] * (S / 2) * k, y: S / 2 + p[1] * (S / 2) * k, z: p[2], k: k };
+    }
+    function star(ctx, x, y, R, spin, color, alpha, glow) {
+      ctx.save();
+      ctx.translate(x, y); ctx.rotate(spin);
+      ctx.globalAlpha = alpha;
+      ctx.shadowColor = color; ctx.shadowBlur = glow ? R * 3.2 : R;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      for (var i = 0; i < 8; i++) {
+        var rad = (i % 2 ? R * .3 : R), ang = i * Math.PI / 4;
+        ctx.lineTo(Math.cos(ang) * rad, Math.sin(ang) * rad);
+      }
+      ctx.closePath(); ctx.fill();
+      ctx.shadowBlur = 0; ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.arc(0, 0, R * .26, 0, 6.2832); ctx.fill();
+      ctx.restore();
+    }
+
+    function draw(time, lean) {
+      var dark = root.getAttribute("data-theme") === "dark";
+      var pal = dark ? COLORS.dark : COLORS.light;
+      [bx, fx].forEach(function (c) { c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, S, S); c.lineCap = "round"; });
+      ORBITS.forEach(function (o, n) {
+        var col = pal[o.col], dir = o.w > 0 ? 1 : -1;
+        var t0 = time * Math.abs(o.w) * dir + n * 1.7, N = 34, dt = .05 * dir, prev = place(o, t0, time, lean);
+        // glowing trail, drawn on whichever canvas the segment is currently on
+        for (var i = 1; i <= N; i++) {
+          var cur = place(o, t0 - i * dt, time, lean), f = 1 - i / N;
+          var ctx = (cur.z + prev.z) / 2 > 0 ? fx : bx;
+          ctx.globalAlpha = f * .75 * (cur.z > 0 ? 1 : .6);
+          ctx.strokeStyle = col; ctx.lineWidth = Math.max(.8, o.size * .5 * f * cur.k);
+          ctx.beginPath(); ctx.moveTo(prev.x, prev.y); ctx.lineTo(cur.x, cur.y); ctx.stroke();
+          prev = cur;
+        }
+        var h = place(o, t0, time, lean), front = h.z > 0;
+        var depthAlpha = .5 + .5 * Math.max(0, Math.min(1, (h.z + .6) / 1.2));
+        star(front ? fx : bx, h.x, h.y, o.size * h.k, time * 1.5 + n, col, front ? 1 : depthAlpha, dark);
+      });
+    }
+
+    // logo tilt: follows the pointer, and gently sways by itself when nobody is moving it
+    var tx = 0, ty = 0, cx = 0, cy = 0, lastMove = -1e9, visible = true, startT = null;
+    window.addEventListener("pointermove", function (e) {
+      var r = stage.getBoundingClientRect();
+      var nx = (e.clientX - (r.left + r.width / 2)) / (window.innerWidth / 2);
+      var ny = (e.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2);
+      tx = Math.max(-1, Math.min(1, nx)) * 26;
+      ty = Math.max(-1, Math.min(1, ny)) * -16;
+      lastMove = performance.now();
+    }, { passive: true });
+
+    function frame(now) {
+      if (startT === null) startT = now;
+      var time = (now - startT) / 1000;
+      if (visible && !document.hidden) {
+        var idle = now - lastMove > 2500;
+        var gy = idle ? Math.sin(time * .6) * 20 : tx;
+        var gx = idle ? Math.cos(time * .45) * 8 : ty;
+        cx += (gx - cx) * .06; cy += (gy - cy) * .06;
+        logo.style.setProperty("--rx", cx.toFixed(2) + "deg");
+        logo.style.setProperty("--ry", cy.toFixed(2) + "deg");
+        draw(time, cy * Math.PI / 180 * .5);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }).observe(stage);
+    }
+    if (reduce) {
+      logo.style.setProperty("--rx", "-6deg");
+      logo.style.setProperty("--ry", "12deg");
+      draw(1.2, 0);               // one still frame, no animation
+    } else {
+      requestAnimationFrame(frame);
+    }
+  })();
+
   /* ---------- footer year ---------- */
   var yr = $("#yr");
   if (yr) yr.textContent = new Date().getFullYear();

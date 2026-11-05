@@ -40,6 +40,31 @@
       <use href="#half"/>
       <use href="#half" transform="translate(1234 0) scale(-1 1)"/>
     </g>
+    <!-- abstract line art used as soft background decoration (petal, arcs, raindrop ripples) -->
+    <symbol id="deco-petal" viewBox="0 0 200 240">
+      <g fill="none" stroke="currentColor" stroke-width="1">
+        <path d="M100 6C62 72 12 122 12 172c0 40 40 64 88 64s88-24 88-64C188 122 138 72 100 6z"/>
+        <path d="M100 40C74 92 40 130 40 170c0 28 26 46 60 46s60-18 60-46c0-40-34-78-60-130z"/>
+        <path d="M100 6C84 84 84 164 100 236"/>
+      </g>
+    </symbol>
+    <symbol id="deco-arcs" viewBox="0 0 200 200">
+      <g fill="none" stroke="currentColor" stroke-width="1">
+        <path d="M0 160A40 40 0 0 1 40 200"/>
+        <path d="M0 120A80 80 0 0 1 80 200"/>
+        <path d="M0 80A120 120 0 0 1 120 200"/>
+        <path d="M0 40A160 160 0 0 1 160 200"/>
+        <path d="M0 0A200 200 0 0 1 200 200"/>
+      </g>
+    </symbol>
+    <symbol id="deco-ripple" viewBox="0 0 300 140">
+      <g fill="none" stroke="currentColor" stroke-width="1">
+        <ellipse cx="150" cy="70" rx="12" ry="4.5"/>
+        <ellipse cx="150" cy="70" rx="44" ry="16"/>
+        <ellipse cx="150" cy="70" rx="86" ry="31"/>
+        <ellipse cx="150" cy="70" rx="148" ry="53"/>
+      </g>
+    </symbol>
   </defs>
 </svg>
 
@@ -76,9 +101,17 @@
 <!-- ============ HERO ============ -->
 <header class="hero">
   <div class="wrap">
-    <div class="logo-stage" role="img" aria-label="House of Geosmin logo">
-      <div class="ring r1"></div><div class="ring r2"></div>
-      <svg class="mark" viewBox="0 300 1240 1180"><use href="#logo-art"/></svg>
+    <!-- 3D logo: stacked copies give it depth, two canvases draw the orbiting stars behind and in front of it (see main.js) -->
+    <div class="logo-stage" id="logoStage" role="img" aria-label="House of Geosmin logo">
+      <canvas class="orbit back" id="orbitBack" aria-hidden="true"></canvas>
+      <div class="logo3d" id="logo3d" aria-hidden="true">
+        <svg class="mark L4" viewBox="0 300 1240 1180"><use href="#logo-art"/></svg>
+        <svg class="mark L3" viewBox="0 300 1240 1180"><use href="#logo-art"/></svg>
+        <svg class="mark L2" viewBox="0 300 1240 1180"><use href="#logo-art"/></svg>
+        <svg class="mark L1" viewBox="0 300 1240 1180"><use href="#logo-art"/></svg>
+        <svg class="mark L0" viewBox="0 300 1240 1180"><use href="#logo-art"/></svg>
+      </div>
+      <canvas class="orbit front" id="orbitFront" aria-hidden="true"></canvas>
     </div>
 
     <!-- ✏️ EDIT: small line above the title -->
@@ -102,6 +135,7 @@
 
 <!-- ============ ABOUT ============ -->
 <section id="about">
+  <svg class="deco d-about" viewBox="0 0 200 240" aria-hidden="true"><use href="#deco-petal"/></svg>
   <div class="wrap">
     <div class="eyebrow reveal"><span class="idx">01</span> About us</div>
     <div class="about-grid">
@@ -134,17 +168,22 @@
 <section class="story">
   <div class="wrap">
     <div class="box glass reveal">
-      <div class="word grad">Geosmin</div>
-      <div class="pos">noun</div>
-      <!-- ✏️ EDIT: the story behind the name -->
-      <blockquote>The earthy scent of fresh soil after the first rain. The smell of ground being broken, and something new about to rise.</blockquote>
-      <p class="after">Every great home begins with that smell.</p>
+      <div class="head">
+        <div class="word grad">Geosmin</div>
+        <div class="pos">noun</div>
+      </div>
+      <div class="body">
+        <!-- ✏️ EDIT: the story behind the name -->
+        <blockquote>The earthy scent of fresh soil after the first rain. The smell of ground being broken, and something new about to rise.</blockquote>
+        <p class="after">Every great home begins with that smell.</p>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ============ SERVICES ============ -->
 <section id="services">
+  <svg class="deco d-services" viewBox="0 0 200 200" aria-hidden="true"><use href="#deco-arcs"/></svg>
   <div class="wrap">
     <div class="eyebrow reveal"><span class="idx">02</span> What we do</div>
     <h2 class="reveal">Everything a house needs<br>to become a <span class="grad">home.</span></h2>
@@ -181,6 +220,7 @@
 
 <!-- ============ PROJECTS ============ -->
 <section id="projects">
+  <svg class="deco d-projects" viewBox="0 0 300 140" aria-hidden="true"><use href="#deco-ripple"/></svg>
   <div class="wrap">
     <div class="eyebrow reveal"><span class="idx">03</span> Our work</div>
     <h2 class="reveal">Homes we've <span class="grad">built.</span></h2>
@@ -207,6 +247,7 @@
 
 <!-- ============ CONTACT ============ -->
 <section id="contact">
+  <svg class="deco d-contact" viewBox="0 0 200 240" aria-hidden="true"><use href="#deco-petal"/></svg>
   <div class="wrap">
     <div class="eyebrow reveal"><span class="idx">05</span> Contact</div>
     <h2 class="reveal">Let's talk about <span class="grad">your home.</span></h2>
@@ -242,7 +283,7 @@
   <div class="wrap">
     <svg class="mark" viewBox="0 300 1240 1180" aria-hidden="true"><use href="#logo-art"/></svg>
     <!-- ✏️ EDIT: footer quote -->
-    <p class="fquote grad">Leave People and Place better than you found them.</p>
+    <p class="fquote grad">Leave People and Places better than you found them.</p>
     <div class="fmeta">
       <span>&copy; <span id="yr">2026</span> House of Geosmin</span>
       <span>HSR Layout &middot; Bengaluru</span>
