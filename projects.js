@@ -90,6 +90,80 @@ window.PROJECTS = [
       "images/project-4/4.jpg",
       "images/project-4/5.jpg"
     ]
+  },
+
+  {
+    name: "Hosur Villa",
+    location: "Hosur",
+    type: "Residential",
+    area: "2,400 sq ft",
+    year: "2026",
+    duration: "18 months",
+    scope: "Design and Consultation",
+    about: "Classical Design on the Hosur foothills.",
+    cover: "images/project-5/cover.jpg",
+    photos: [
+      "images/project-5/1.jpg",
+      "images/project-5/2.jpg",
+      "images/project-5/3.jpg",
+      "images/project-5/4.jpg"
+    ]
+  },
+
+  {
+    name: "Dental Clinic",
+    location: "Bengaluru",
+    type: "Interiors",
+    area: "1,200 sq ft",
+    year: "2024",
+    duration: "3 months",
+    scope: "Design and Consultation",
+    about: "Colours and volumes get along.",
+    cover: "images/project-6/cover.jpg",
+    photos: [
+      "images/project-6/1.jpg",
+      "images/project-6/2.jpg",
+      "images/project-6/3.jpg"
+    ]
+  },
+
+  {
+    name: "Bonny's Interiors",
+    location: "Bengaluru",
+    type: "Interiors",
+    area: "1,200 sq ft",
+    year: "2025",
+    duration: "3 months",
+    scope: "Design and Consultation",
+    about: "Apartment Interiors.",
+    cover: "images/project-7/cover.jpg",
+    photos: [
+      "images/project-7/1.jpg",
+      "images/project-7/2.jpg",
+      "images/project-7/3.jpg",
+      "images/project-7/4.jpg",
+      "images/project-7/5.jpg"
+    ]
+  },
+
+  {
+    name: "IIM Colive",
+    location: "Bengaluru",
+    type: "Commercial",
+    area: "4,000 sq ft",
+    year: "2025",
+    duration: "24 months",
+    scope: "Design and Consultation",
+    about: "Co-Live with similar floorplate.",
+    cover: "images/project-8/cover.jpg",
+    photos: [
+      "images/project-8/1.jpg",
+      "images/project-8/2.jpg",
+      "images/project-8/3.jpg",
+      "images/project-8/4.jpg",
+      "images/project-8/5.jpg",
+      "images/project-8/6.jpg"
+    ]
   }
 
   /* To add another project, put a comma after the } above,
