@@ -111,7 +111,7 @@ window.PROJECTS = [
   },
 
   {
-    name: "Dental Clinic",
+    name: "Dr Vinayak Dental Clinic",
     location: "Bengaluru",
     type: "Interiors",
     area: "1,200 sq ft",
